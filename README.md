@@ -1,4 +1,5 @@
-% JudgingLLM-as-a-Judge
+# JudgingLLM-as-a-Judge
+## Concerning Rubric Artifacts in LLM-based Automated Text Generation Evaluation
 
 Purpose
 -------
