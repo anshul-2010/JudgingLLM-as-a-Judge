@@ -7,7 +7,7 @@ This repository contains code and utilities used for the experiments in the rese
 
 Dependencies
 ------------
-- Python 3.8+ recommended
+- Python 3.1+ recommended
 - Commonly used packages (install via pip):
 
 ```
