@@ -5,7 +5,14 @@
 Centre for Responsible AI (CeRAI), Wadhwani School of Data Science and AI, IIT Madras
 *EMNLP 2026*
 
+<<<<<<< HEAD
 ---
+=======
+Dependencies
+------------
+- Python 3.1+ recommended
+- Commonly used packages (install via pip):
+>>>>>>> 07ca872ed6e617830d6f4cbe093a42716e486442
 
 LLM-as-a-Judge pipelines assume that verdicts come from reasoning over a candidate response with respect to a rubric. We test this assumption with a **rubric-only probe**: a classifier that sees *only* the rubric text and predicts the judge's verdict, with no access to the conversation or the evaluated response.
 
@@ -30,6 +37,7 @@ git clone <repo-url> && cd JudgingLLM-as-a-Judge
 pip install -r requirements.txt
 ```
 
+<<<<<<< HEAD
 - Run all scripts **from the repository root**, e.g. `python src/probe/probe_weighted_eval.py`. They read from `data/` and write to `results/`, `figures/` and `checkpoints/`.
 - Scripts that download gated models call `huggingface_hub.login`. Set `hf_token` at the top of the script to your own [Hugging Face token](https://huggingface.co/settings/tokens).
 - Experiments were run on NVIDIA A100 GPUs with Python 3.10, `transformers` 4.38.2 and `torch` 2.1.
@@ -133,3 +141,18 @@ HealthBench is released under the MIT licence. Model weights are used under thei
 ## Contact
 
 Anshul Bagaria · be21b005@smail.iitm.ac.in
+=======
+Repository structure
+--------------------
+- [Bert_balanced_cla_eval_probe.py](Bert_balanced_cla_eval_probe.py) — Balanced classification evaluation probe scripts.
+- [Bert_balanced_cla_hard_probe.py](Bert_balanced_cla_hard_probe.py) — Hard (difficult) balanced classification probes.
+- [Bert_classification_eval_probe.py](Bert_classification_eval_probe.py) — Standard classification evaluation probes.
+- [Bert_classification_hard_probe.py](Bert_classification_hard_probe.py) — Hard classification probe variants.
+- [cross_dataset_classification.py](cross_dataset_classification.py) — Utilities and scripts for cross-dataset experiments.
+- [llm_as_judge_only_rubric.py](llm_as_judge_only_rubric.py) — LLM-as-judge evaluation using only rubric text.
+- [llm_as_judge_response_and_rubric.py](llm_as_judge_response_and_rubric.py) — LLM-as-judge using both model responses and rubric.
+- [utilities/bertopic.py](utilities/bertopic.py) — BERTopic helper wrappers.
+- [utilities/integrated_gradients.py](utilities/integrated_gradients.py) — Integrated Gradients utilities for interpretability.
+- [utilities/llm_as_judge_features.py](utilities/llm_as_judge_features.py) — Feature extraction helpers for LLM-as-judge experiments.
+- [utilities/umap.py](utilities/umap.py) — UMAP-related utilities and wrappers.
+>>>>>>> 07ca872ed6e617830d6f4cbe093a42716e486442
