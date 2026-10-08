@@ -116,7 +116,7 @@ These scripts load a trained probe from `checkpoints/pubmedbert_gemma_eval`.
 
 See [`data/README.md`](data/README.md) for file and column descriptions.
 
-## Citation
+<!-- ## Citation
 
 ```bibtex
 @inproceedings{bagaria2026judging,
@@ -125,12 +125,8 @@ See [`data/README.md`](data/README.md) for file and column descriptions.
   booktitle = {Proceedings of the 2026 Conference on Empirical Methods in Natural Language Processing},
   year      = {2026}
 }
-```
+``` -->
 
 ## Licence and usage
 
 HealthBench is released under the MIT licence. Model weights are used under their respective licences: Llama 3.1 Community License, Gemma Terms of Use, Health AI Developer Foundations Terms of Use, and CC-BY-NC-ND for MMed-Llama-3. See Appendix A.1 of the paper.
-
-## Contact
-
-Anshul Bagaria · be21b005@smail.iitm.ac.in

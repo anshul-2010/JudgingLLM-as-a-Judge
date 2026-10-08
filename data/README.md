@@ -23,15 +23,7 @@ Each row is one rubric criterion. Labels come from the Qwen2.5-7B-Instruct judge
 | `digit_count`, `question_count` | Number of digits / question marks in the rubric |
 | `bert_label` | Probe prediction (Gemma files only) |
 
-## `healthbench_probe/healthbench/`
-
-Raw HealthBench releases. Each line is one conversation with fields `prompt`, `rubrics` (criterion + points), `example_tags`, `ideal_completions_data`, `prompt_id` and `canary`.
-
-| File | Split | Conversations |
-|---|---|---|
-| `2025-05-07-06-14-12_oss_eval.jsonl` | Eval | 5,000 |
-| `hard_2025-05-08-21-00-10.jsonl` | Hard | 1,000 |
-| `consensus_2025-05-09-20-00-46.jsonl` | Consensus | 3,671 |
+The raw HealthBench conversations (`.jsonl`) are not included. Download them from OpenAI's [simple-evals](https://github.com/openai/simple-evals) repository.
 
 ## `researchrubrics_probe/`
 
