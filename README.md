@@ -5,42 +5,34 @@
 Centre for Responsible AI (CeRAI), Wadhwani School of Data Science and AI, IIT Madras
 *EMNLP 2026*
 
-<<<<<<< HEAD
 ---
-=======
-Dependencies
-------------
-- Python 3.1+ recommended
-- Commonly used packages (install via pip):
->>>>>>> 07ca872ed6e617830d6f4cbe093a42716e486442
 
 LLM-as-a-Judge pipelines assume that verdicts come from reasoning over a candidate response with respect to a rubric. We test this assumption with a **rubric-only probe**: a classifier that sees *only* the rubric text and predicts the judge's verdict, with no access to the conversation or the evaluated response.
 
-<p align="center">
-  <code>rubric text r</code> &nbsp;→&nbsp; <b>probe classifier</b> &nbsp;→&nbsp; <code>judge label y</code>
-  &nbsp;&nbsp;&nbsp;(conversation, candidate response: <i>withheld</i>)
-</p>
+```
+rubric text r  ──►  probe classifier  ──►  judge label y        (conversation and candidate response withheld)
+```
 
-If the rubric only guided judgment, `p(y | r)` would be at chance. Instead:
+If the rubric only guided judgment, `p(y | r)` would be at chance (0.5). Instead:
 
-| Finding | Result |
+| Experiment | Result |
 |---|---|
-| Rubric-only probe (PubMedBERT, HealthBench) | Balanced accuracy **0.80–0.88**, well above 0.5 |
-| Rubric-only probe (ResearchRubrics) | Signal persists outside the medical domain |
-| Output perturbation (response reversed, rubric fixed) | Judge flips as expected in only **37.7%** of pairs |
-| Rubric perturbation (criterion reversed, response fixed) | Judge flips as expected in only **16.8%** (Gemma) / **32.2%** (LLaMA) of pairs |
+| Rubric-only probe, HealthBench (PubMedBERT) | Balanced accuracy **0.80–0.88** |
+| Rubric-only probe, ResearchRubrics | Signal persists outside the medical domain |
+| Output perturbation: response reversed, rubric fixed | Judge flips as expected in only **37.7%** of pairs |
+| Rubric perturbation: criterion reversed, response fixed | Judge flips as expected in only **16.8%** (Gemma) / **32.2%** (LLaMA) of pairs |
 
 ## Setup
 
 ```bash
-git clone <repo-url> && cd JudgingLLM-as-a-Judge
+git clone <repo-url>
+cd JudgingLLM-as-a-Judge
 pip install -r requirements.txt
 ```
 
-<<<<<<< HEAD
-- Run all scripts **from the repository root**, e.g. `python src/probe/probe_weighted_eval.py`. They read from `data/` and write to `results/`, `figures/` and `checkpoints/`.
-- Scripts that download gated models call `huggingface_hub.login`. Set `hf_token` at the top of the script to your own [Hugging Face token](https://huggingface.co/settings/tokens).
-- Experiments were run on NVIDIA A100 GPUs with Python 3.10, `transformers` 4.38.2 and `torch` 2.1.
+- Run every script **from the repository root**, e.g. `python src/probe/probe_weighted_eval.py`. Scripts read from `data/` and write to `results/`, `figures/` and `checkpoints/`, which are created as needed.
+- Scripts that download gated models call `huggingface_hub.login`. Replace the `hf_token` placeholder at the top of the script with your own [Hugging Face token](https://huggingface.co/settings/tokens). Do not commit it.
+- Original experiments: NVIDIA A100 GPUs, Python 3.10, `transformers` 4.38.2, `torch` 2.1.
 
 | Role | Model |
 |---|---|
@@ -53,23 +45,19 @@ pip install -r requirements.txt
 
 ```
 JudgingLLM-as-a-Judge/
-├── data/                              # see data/README.md
-│   ├── healthbench_probe/
-│   │   ├── healthbench/               # raw HealthBench releases (.jsonl)
-│   │   └── {model}_{eval,hard}_judge.csv   # rubric-only probe datasets
-│   └── researchrubrics_probe/         # ResearchRubrics prompts, rubrics and candidate answers
+├── data/                                  # column descriptions in data/README.md
+│   ├── healthbench_probe/                 # rubric-only probe datasets, {model}_{eval,hard}_judge.csv
+│   └── researchrubrics_probe/             # ResearchRubrics prompts, rubrics and candidate answers
 ├── src/
-│   ├── judge/                         # 1. obtain LLM-as-a-Judge labels
-│   ├── probe/                         # 2. rubric-only probe classifiers
-│   ├── counterfactual_perturbations/  # 3. output and rubric perturbation experiments
+│   ├── judge/                             # 1. LLM-as-a-Judge labels
+│   ├── probe/                             # 2. rubric-only probe classifiers
+│   ├── counterfactual_perturbations/      # 3. counterfactual experiments (scripts + data)
 │   │   ├── output_perturbations/
 │   │   └── rubric_perturbations/
-│   └── analysis/                      # 4. semantic analysis of rubrics
+│   └── analysis/                          # 4. semantic analysis of rubrics
 ├── requirements.txt
 └── README.md
 ```
-
-`results/`, `figures/` and `checkpoints/` are created when the scripts run. `checkpoints/` is git-ignored.
 
 ## Pipeline
 
@@ -77,7 +65,7 @@ JudgingLLM-as-a-Judge/
 
 | Script | Description |
 |---|---|
-| `judge_response_and_rubric.py` | Qwen judge scores each candidate response against each rubric criterion (given the conversation). Produces `binary_label`. |
+| `judge_response_and_rubric.py` | Qwen judge scores each candidate response against each rubric criterion, given the conversation. Produces `binary_label`. |
 | `judge_rubric_only.py` | Qwen judge sees only the rubric text. Produces `no_context_binary_label`. |
 
 ### 2. Rubric-only probe: `src/probe/` (§4, App. B–D)
@@ -86,23 +74,30 @@ JudgingLLM-as-a-Judge/
 |---|---|---|
 | `probe_weighted_eval.py`, `probe_weighted_hard.py` | Fig. 3 (WC), Table 2 | PubMedBERT probe with class-weighted loss, 5-fold CV |
 | `probe_balanced_eval.py`, `probe_balanced_hard.py` | Fig. 3 (BS) | PubMedBERT probe on balanced subsamples |
-| `cross_dataset.py` | Fig. 9 | Train on HB-Eval, test on HB-Hard, and the reverse |
-| `tfidf_baselines.py` | Fig. 8, 11 | TF-IDF + logistic regression / naïve Bayes / majority-class baseline |
+| `cross_dataset.py` | Fig. 9 | Train on HB-Eval and test on HB-Hard, and the reverse |
+| `tfidf_baselines.py` | Fig. 8, 11 | TF-IDF features with logistic regression, naïve Bayes and a majority-class baseline |
 
-The probe scripts are set up for the Gemma cohort. To run another cohort, change the CSV name at the top of the script (`llama_`, `medgemma_`, `medllama_`).
+The probe scripts are configured for the Gemma cohort. To run another cohort, change the CSV prefix at the top of the script to `llama_`, `medgemma_` or `medllama_`.
 
 ### 3. Counterfactual perturbations: `src/counterfactual_perturbations/` (§5.1–5.2, App. E)
 
-| Path | Description |
+**Output perturbation.** The conversation and rubric stay fixed while the response is reversed.
+
+| File | Description |
 |---|---|
-| `output_perturbations/output_perturb.py` | For each (conversation, rubric) pair, Mistral-7B writes one response that **satisfies** the rubric and one that **violates** it. Both are then scored by the judge. |
+| `output_perturbations/output_perturb.py` | Mistral-7B writes one response that **satisfies** the rubric and one that **violates** it. Both are then scored by the judge. |
 | `output_perturbations/healthbench_output_perturb.csv` | 500 sampled HealthBench conversations, one `selected_rubric` each |
 | `output_perturbations/research_output_perturb.csv` | 101 ResearchRubrics prompts, one `selected_rubric` each |
-| `rubric_perturbations/rubric_perturb.py` | Mistral-7B rewrites each rubric with a minimal edit that **reverses** its criterion (greedy decoding) |
-| `rubric_perturbations/health_rubric_perturb.csv` | 1,000 HealthBench rubrics: original (`rubric_text`), reversed (`paraphrased_rubric`), and judge verdicts for both (`{gemma,llama}_rubric_label`, `{gemma,llama}_para_rubric_label`) |
-| `rubric_perturbations/research_rubric_perturb.csv` | Same, for 1,000 ResearchRubrics criteria |
 
-A judge that tracks the criterion should flip its verdict in every pair: `*_rubric_label ≠ *_para_rubric_label`.
+**Rubric perturbation.** The conversation and response stay fixed while the rubric criterion is reversed.
+
+| File | Description |
+|---|---|
+| `rubric_perturbations/rubric_perturb.py` | Mistral-7B rewrites each rubric with a minimal edit that **reverses** its criterion (greedy decoding) |
+| `rubric_perturbations/health_rubric_perturb.csv` | 1,000 HealthBench rubrics with the original (`rubric_text`), the reversed rubric (`paraphrased_rubric`) and judge verdicts for both (`{gemma,llama}_rubric_label`, `{gemma,llama}_para_rubric_label`) |
+| `rubric_perturbations/research_rubric_perturb.csv` | The same for 1,000 ResearchRubrics criteria |
+
+A judge that tracks the criterion should flip its verdict in every pair, i.e. `*_rubric_label ≠ *_para_rubric_label`.
 
 ### 4. Rubric semantics: `src/analysis/` (§5.3, App. F)
 
@@ -116,12 +111,10 @@ These scripts load a trained probe from `checkpoints/pubmedbert_gemma_eval`.
 
 ## Data
 
-- **HealthBench** (Arora et al., 2025): 5,000 conversations (Eval), 1,000 (Hard) and 3,671 (Consensus), each with physician-written, conversation-specific rubrics. MIT licence.
+- **HealthBench** (Arora et al., 2025): 5,000 healthcare conversations (1,000 in the Hard subset), each with physician-written, conversation-specific rubrics. MIT licence. The raw `.jsonl` files are not included here; download them from OpenAI's [simple-evals](https://github.com/openai/simple-evals) repository.
 - **ResearchRubrics** (Sharma et al., 2026): 101 research prompts with about 2.6k instance-specific rubric criteria.
 
-Column descriptions are in [`data/README.md`](data/README.md).
-
-> HealthBench files contain a `canary` field. Please keep it intact so these examples can be excluded from model training data.
+See [`data/README.md`](data/README.md) for file and column descriptions.
 
 ## Citation
 
@@ -136,23 +129,8 @@ Column descriptions are in [`data/README.md`](data/README.md).
 
 ## Licence and usage
 
-HealthBench is released under the MIT licence. Model weights are used under their respective licences (Llama 3.1 Community License, Gemma Terms of Use, Health AI Developer Foundations Terms, CC-BY-NC-ND for MMed-Llama-3). See Appendix A.1 of the paper.
+HealthBench is released under the MIT licence. Model weights are used under their respective licences: Llama 3.1 Community License, Gemma Terms of Use, Health AI Developer Foundations Terms of Use, and CC-BY-NC-ND for MMed-Llama-3. See Appendix A.1 of the paper.
 
 ## Contact
 
 Anshul Bagaria · be21b005@smail.iitm.ac.in
-=======
-Repository structure
---------------------
-- [Bert_balanced_cla_eval_probe.py](Bert_balanced_cla_eval_probe.py) — Balanced classification evaluation probe scripts.
-- [Bert_balanced_cla_hard_probe.py](Bert_balanced_cla_hard_probe.py) — Hard (difficult) balanced classification probes.
-- [Bert_classification_eval_probe.py](Bert_classification_eval_probe.py) — Standard classification evaluation probes.
-- [Bert_classification_hard_probe.py](Bert_classification_hard_probe.py) — Hard classification probe variants.
-- [cross_dataset_classification.py](cross_dataset_classification.py) — Utilities and scripts for cross-dataset experiments.
-- [llm_as_judge_only_rubric.py](llm_as_judge_only_rubric.py) — LLM-as-judge evaluation using only rubric text.
-- [llm_as_judge_response_and_rubric.py](llm_as_judge_response_and_rubric.py) — LLM-as-judge using both model responses and rubric.
-- [utilities/bertopic.py](utilities/bertopic.py) — BERTopic helper wrappers.
-- [utilities/integrated_gradients.py](utilities/integrated_gradients.py) — Integrated Gradients utilities for interpretability.
-- [utilities/llm_as_judge_features.py](utilities/llm_as_judge_features.py) — Feature extraction helpers for LLM-as-judge experiments.
-- [utilities/umap.py](utilities/umap.py) — UMAP-related utilities and wrappers.
->>>>>>> 07ca872ed6e617830d6f4cbe093a42716e486442
