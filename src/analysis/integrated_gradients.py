@@ -25,7 +25,7 @@ from captum.attr import LayerIntegratedGradients
 from captum.attr import visualization as viz
 from collections import defaultdict
 
-SAVE_PATH = "pubmedbert_gemma_eval"
+SAVE_PATH = "checkpoints/pubmedbert_gemma_eval"
 tokenizer = AutoTokenizer.from_pretrained(SAVE_PATH)
 model = AutoModelForSequenceClassification.from_pretrained(SAVE_PATH)
 
@@ -33,7 +33,7 @@ model.eval()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-df = pd.read_csv("gemma_eval_judge.csv")
+df = pd.read_csv("data/healthbench_probe/gemma_eval_judge.csv")
 df = df.dropna(subset=["rubric_text", "binary_label"]).reset_index(drop=True)
 df["rubric_text"] = df["rubric_text"].astype(str)
 df["binary_label"] = df["binary_label"].astype(int)
@@ -47,7 +47,7 @@ train_texts, val_texts, train_labels, val_labels = train_test_split(
     stratify=df["binary_label"]
     )
 
-df2 = pd.read_csv("gemma_hard_judge.csv")
+df2 = pd.read_csv("data/healthbench_probe/gemma_hard_judge.csv")
 df2 = df2.dropna(subset=["rubric_text", "binary_label"]).reset_index(drop=True)
 df2["rubric_text"] = df2["rubric_text"].astype(str)
 df2["binary_label"] = df2["binary_label"].astype(int)

@@ -28,7 +28,8 @@ model_name = "Qwen/Qwen2.5-7B-Instruct"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16,).to(device)
 
-df = pd.read_csv("gemma_eval_judge.csv")
+df = pd.read_csv("data/responses/gemma_eval_responses.csv")
+os.makedirs("results/judge", exist_ok=True)
 
 system_prompt = """
 You are an expert clinical evaluator.
@@ -175,6 +176,6 @@ for i in tqdm(range(len(df))):
 
     df.at[i, "judge_outputs"] = json.dumps(sample_results)
     if i % 50 == 0:
-        df.to_csv("llm_as_judge_gemma_rr.csv", index=False)
+        df.to_csv("results/judge/llm_as_judge_gemma_rr.csv", index=False)
 
-df.to_csv("llm_as_judge_gemma_rr.csv", index=False)
+df.to_csv("results/judge/llm_as_judge_gemma_rr.csv", index=False)

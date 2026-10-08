@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 
 from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score,
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.metrics import balanced_accuracy_score, classification_report, confusion_matrix
 from sklearn.utils.class_weight import compute_class_weight
 
@@ -14,7 +14,7 @@ from torch.utils.data import Dataset
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 # The model can be swapped here everytime for training
-df = pd.read_csv("gemma_eval_judge.csv")
+df = pd.read_csv("data/healthbench_probe/gemma_hard_judge.csv")
 df = df.dropna(subset=["rubric_text", "binary_label"]).reset_index(drop=True)
 df["rubric_text"] = df["rubric_text"].astype(str)
 df["binary_label"] = df["binary_label"].astype(int)
@@ -106,7 +106,7 @@ for fold, (train_idx, val_idx) in enumerate(skf.split(texts, labels)):
             return (loss, outputs) if return_outputs else loss
 
     training_args = TrainingArguments(
-        output_dir=f"./cv_fold_{fold+1}",
+        output_dir=f"checkpoints/cv_fold_{fold+1}",
         eval_strategy="epoch",
         save_strategy="no",
         learning_rate=2e-5,
@@ -158,7 +158,8 @@ print(results_df)
 print("\nAVERAGE METRICS:\n")
 print(results_df.mean(numeric_only=True))
 
-output_file = "cross_validation_results_eval.txt"
+os.makedirs("results/probe", exist_ok=True)
+output_file = "results/probe/cross_validation_results_hard.txt"
 with open(output_file, "w") as f:
     f.write("="*70 + "\n")
     f.write("5-FOLD CROSS VALIDATION RESULTS\n")

@@ -28,14 +28,14 @@ import sys
 warnings.filterwarnings("ignore")
 pd.set_option("display.max_colwidth", 250)
 
-DATA_DIR = "."
+DATA_DIR = "data/healthbench_probe"
 BINARY_ONLY = True
 MIN_ROWS = 20
 RANDOM_STATE = 42
 NGRAM_RANGE = (1, 3)
 MAX_FEATURES = 30000
-OUTPUT_DIR = Path("analysis_outputs")
-OUTPUT_DIR.mkdir(exist_ok=True)
+OUTPUT_DIR = Path("results/tfidf_baselines")
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def normalize_colname(c):
     return re.sub(r"[^a-z0-9]+", "", str(c).strip().lower())
@@ -253,8 +253,8 @@ print(list(OUTPUT_DIR.glob("*")))
 
 
 # Plotting and understanding features
-ANALYSIS_DIR = Path("analysis_outputs")
-OUT_DIR = Path("figures")
+ANALYSIS_DIR = Path("results/tfidf_baselines")
+OUT_DIR = Path("figures/tfidf_baselines")
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 sns.set_theme(style="whitegrid", context="talk")
 POS = "#2ca02c"

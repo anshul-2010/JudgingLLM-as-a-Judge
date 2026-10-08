@@ -16,8 +16,9 @@ np.random.seed(SEED)
 torch.manual_seed(SEED)
 MODEL_NAME = "microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext"
 
-eval_df = pd.read_csv("gemma_eval_judge.csv")
-hard_df = pd.read_csv("gemma_hard_judge.csv")
+eval_df = pd.read_csv("data/healthbench_probe/gemma_eval_judge.csv")
+hard_df = pd.read_csv("data/healthbench_probe/gemma_hard_judge.csv")
+os.makedirs("results/probe/gemma", exist_ok=True)
 
 def clean_df(df):
     df = df.dropna(subset=["rubric_text", "binary_label"]).reset_index(drop=True)
@@ -71,7 +72,7 @@ def run_experiment(train_df, test_df, experiment_name):
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
 
     training_args = TrainingArguments(
-        output_dir=f"./pubmedbert_gemma_{experiment_name}",
+        output_dir=f"checkpoints/pubmedbert_gemma_{experiment_name}",
         eval_strategy="epoch",
         save_strategy="no",
         learning_rate=2e-5,
@@ -107,7 +108,7 @@ def run_experiment(train_df, test_df, experiment_name):
     cm = confusion_matrix(labels, preds)
     print(cm)
 
-    with open(f"gemma/1_{experiment_name}.txt", "w") as f:
+    with open(f"results/probe/gemma/1_{experiment_name}.txt", "w") as f:
         f.write("="*80 + "\n")
         f.write(experiment_name + "\n")
         f.write("="*80 + "\n\n")

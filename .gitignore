@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# Model checkpoints written by the probe scripts
+checkpoints/
+*.pt
+*.bin
+*.safetensors
+
+# Hugging Face Trainer artifacts
+runs/
+wandb/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -17,7 +17,7 @@ random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
 
-df = pd.read_csv("gemma_eval_judge.csv")
+df = pd.read_csv("data/healthbench_probe/gemma_hard_judge.csv")
 df = df.dropna(subset=["rubric_text", "binary_label"]).reset_index(drop=True)
 df["rubric_text"] = df["rubric_text"].astype(str)
 df["binary_label"] = df["binary_label"].astype(int)
@@ -32,7 +32,8 @@ print("\nMinority Size:", minority_size)
 MODEL_NAME = "microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
-RESULTS_DIR = "gemma"
+RESULTS_DIR = "results/probe/gemma"
+os.makedirs(RESULTS_DIR, exist_ok=True)
 METRIC_COLS = ["accuracy", "f1", "precision", "recall", "balanced_accuracy"]
 
 class ClinicalDataset(Dataset):
@@ -91,7 +92,7 @@ def write_summary(f, results_df):
 
 N_RUNS = 1
 all_results = []
-output_path = os.path.join(RESULTS_DIR, "balanced_eval_rubrics.txt")
+output_path = os.path.join(RESULTS_DIR, "balanced_hard_rubrics.txt")
 
 with open(output_path, "w") as out_f:
     out_f.write("=" * 80 + "\n")
@@ -136,7 +137,7 @@ with open(output_path, "w") as out_f:
             model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
 
             training_args = TrainingArguments(
-                output_dir=f"./pubmedbert_gemma_eval_run_{run+1}_fold_{fold+1}",
+                output_dir=f"checkpoints/pubmedbert_gemma_hard_run_{run+1}_fold_{fold+1}",
                 eval_strategy="epoch",
                 save_strategy="no",
                 learning_rate=2e-5,

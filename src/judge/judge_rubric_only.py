@@ -28,7 +28,8 @@ model_name = "Qwen/Qwen2.5-7B-Instruct"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16).to(device)
 
-df = pd.read_csv("gemma_eval_judge.csv")
+df = pd.read_csv("data/healthbench_probe/gemma_eval_judge.csv")
+os.makedirs("results/judge", exist_ok=True)
 
 system_prompt = """
 You are an expert evaluator of medical rubric criteria.
@@ -137,6 +138,6 @@ for i in tqdm(range(len(df))):
     print("RAW OUTPUT:", raw_output)
     df.loc[i, "no_context_binary_label"] = raw_output["no_context_binary_label"]
     if i % 50 == 0:
-        df.to_csv("llm_as_judge_gemma_r.csv", index=False)
+        df.to_csv("results/judge/llm_as_judge_gemma_r.csv", index=False)
 
-df.to_csv("llm_as_judge_gemma_r.csv", index=False)
+df.to_csv("results/judge/llm_as_judge_gemma_r.csv", index=False)
